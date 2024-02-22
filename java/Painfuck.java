@@ -1,6 +1,6 @@
-import java.util.*;
-
 // NOT COMPLETED
+// import java.util.*;
+
 // public class Painfuck {
 
 //     public static String interpreter(String code, int iteratrions, int width, int height) {
