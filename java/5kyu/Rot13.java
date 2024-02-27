@@ -1,4 +1,5 @@
-public class Solution {
+// changed name beacuse it was "Solution"
+public class Rot13 {
 
     public static String rot13(String message) {
 
