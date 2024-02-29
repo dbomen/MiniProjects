@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class RgbToHex {
+public class rgb {
     static List<String> hexTable = List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F");
 
     public static String rgb(int r, int g, int b) {
