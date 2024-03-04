@@ -16,10 +16,12 @@ public class Blobservation {
     int[][] area;
 
     public Blobservation(int hNw) {
+        if (!(8 <= hNw || hNw <= 50))  throw new RuntimeException();
         this.area = new int[hNw][hNw];
     }
 
     public Blobservation(int h, int w) {
+        if (!(8 <= h || h <= 50) || !(8 <= w || w <= 50))  throw new RuntimeException();
         this.area = new int[h][w];
     }
 
@@ -30,21 +32,21 @@ public class Blobservation {
             int y = map.get("y");
             int size = map.get("size");
             
-            if (x < 0 || y < 0 || size < 0)  throw new RuntimeException();
+            if (x < 0 || y < 0 || size < 0 || size > 20)  throw new RuntimeException();
 
             area[x][y] += size;
         }
 
-        // ----------------------------------------------------------
-        // TODO: delete this print spam!
-        for (int i = 0; i < this.area.length; i++) {
-            for (int j = 0; j < this.area[i].length; j++) {
-                System.out.format("%d", this.area[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
-        // -----------------------------------------------------------
+        // // ----------------------------------------------------------
+        // // TODO: delete this print spam!
+        // for (int i = 0; i < this.area.length; i++) {
+        //     for (int j = 0; j < this.area[i].length; j++) {
+        //         System.out.format("%d", this.area[i][j]);
+        //     }
+        //     System.out.println();
+        // }
+        // System.out.println();
+        // // -----------------------------------------------------------
     }
 
     public void move() {
@@ -52,7 +54,7 @@ public class Blobservation {
     }
 
     public void move(int n) {
-        if (n < 0)  throw new RuntimeException();
+        if (n <= 0)  throw new RuntimeException();
 
         while (n > 0) {
             n--;
@@ -75,13 +77,13 @@ public class Blobservation {
                 }
             }
 
-            // ----------------------------------------------------------
-            // TODO: delete this print spam!
-            System.out.println();
-            for (int i = 0; i < movements.size(); i++) {
-                System.out.format("%d,%d -> %d,%d | size: %d\n", movements.get(i)[0][0], movements.get(i)[0][1], movements.get(i)[1][0], movements.get(i)[1][1], movements.get(i)[3][0]);
-            }
-            // -----------------------------------------------------------
+            // // ----------------------------------------------------------
+            // // TODO: delete this print spam!
+            // System.out.println();
+            // for (int i = 0; i < movements.size(); i++) {
+            //     System.out.format("%d,%d -> %d,%d | size: %d\n", movements.get(i)[0][0], movements.get(i)[0][1], movements.get(i)[1][0], movements.get(i)[1][1], movements.get(i)[3][0]);
+            // }
+            // // -----------------------------------------------------------
 
             // [ [Current Position], [New Position], [Is Fused], [Size] ]
             List<int[][]> movementsFused = new ArrayList<>();
@@ -109,23 +111,23 @@ public class Blobservation {
                 this.area[movementsFused.get(i)[1][0]][movementsFused.get(i)[1][1]] = movementsFused.get(i)[3][0];
             }
 
-            // ----------------------------------------------------------
-            // TODO: delete this print spam!
-            System.out.format("move %d: \n", n + 1);
-            for (int i = 0; i < this.area.length; i++) {
-                for (int j = 0; j < this.area[i].length; j++) {
-                    System.out.format("%d", this.area[i][j]);
-                }
-                System.out.println();
-            }
-            System.out.println();
-            // -----------------------------------------------------------
+            // // ----------------------------------------------------------
+            // // TODO: delete this print spam!
+            // System.out.format("move %d: \n", n + 1);
+            // for (int i = 0; i < this.area.length; i++) {
+            //     for (int j = 0; j < this.area[i].length; j++) {
+            //         System.out.format("%d", this.area[i][j]);
+            //     }
+            //     System.out.println();
+            // }
+            // System.out.println();
+            // // -----------------------------------------------------------
         }
     }
 
     public int[] findMove(int[] pos, int[] size) {
         // TODO: remove this
-        System.out.print("new blob: ");
+        // System.out.print("new blob: ");
         // when it finds "skinnier" blob, it will save the distance and look for "skinnier" blobs in that range
 
         int maxDistance = (this.area.length > this.area[0].length) ? this.area.length - 1: this.area[0].length - 1;
@@ -160,8 +162,8 @@ public class Blobservation {
 
                     if      (iSame && jBigger)      move = new int[]{pos[0], pos[1] + 1, 2};     // go right
                     else if (iSame && !jBigger)     move = new int[]{pos[0], pos[1] - 1, 6};     // go left
-                    else if (jSame && iBigger)      move = new int[]{pos[0] + 1, pos[1], 0};     // go up
-                    else if (jSame && !iBigger)     move = new int[]{pos[0] - 1, pos[1], 4};     // go down
+                    else if (jSame && iBigger)      move = new int[]{pos[0] + 1, pos[1], 4};     // go down
+                    else if (jSame && !iBigger)     move = new int[]{pos[0] - 1, pos[1], 0};     // go up
                                                                                     // ------------- Diagonals:
                     else if (iBigger && jBigger)    move = new int[]{pos[0] + 1, pos[1] + 1, 3}; // go right / down
                     else if (iBigger && !jBigger)   move = new int[]{pos[0] + 1, pos[1] - 1, 5}; // go left  / down
@@ -176,12 +178,12 @@ public class Blobservation {
             }
         }
 
-        // ----------------------------------------------------------
-        // TODO: delete this print spam!
-        for (int a = 0; a < possibleTargets.size(); a++) {
-            System.out.format("size: %d | distance: %d | possible move: %d, %d\n", possibleTargets.get(a)[0][0], possibleTargets.get(a)[1][0], possibleTargets.get(a)[2][0], possibleTargets.get(a)[2][1]);
-        }
-        // -----------------------------------------------------------
+        // // ----------------------------------------------------------
+        // // TODO: delete this print spam!
+        // for (int a = 0; a < possibleTargets.size(); a++) {
+        //     System.out.format("size: %d | distance: %d | possible move: %d, %d\n", possibleTargets.get(a)[0][0], possibleTargets.get(a)[1][0], possibleTargets.get(a)[2][0], possibleTargets.get(a)[2][1]);
+        // }
+        // // -----------------------------------------------------------
 
         if (possibleTargets.size() == 0)  return pos;
         possibleTargets.sort((a, b) -> {
