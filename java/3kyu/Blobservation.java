@@ -14,6 +14,7 @@ import java.util.*;
 
 public class Blobservation {
     int[][] area;
+    static boolean randomPrimerPrintaj = false;
 
     public Blobservation(int hNw) {
         if (!(8 <= hNw || hNw <= 50))  throw new RuntimeException();
@@ -25,28 +26,67 @@ public class Blobservation {
         this.area = new int[h][w];
     }
 
-    // TODO: DELA, TESTED
     public void populate(List<Map<String, Integer>> list) {
+        if (randomPrimerPrintaj)  System.out.format("newCall: %d %d\n", this.area[18][5], this.area[18][6]);
+
+        boolean stop = false;
+
+        // [X, Y, Size]
+        List<List<Integer>> potencialElements = new ArrayList<>();
+
+        // // TODO: delete
+        // if (randomPrimerPrintaj)  System.out.println(list.toString());
+
+        // check list for invalid values
         for (Map<String, Integer> map : list) {
             int x = map.get("x");
             int y = map.get("y");
             int size = map.get("size");
-            
-            if (x < 0 || y < 0 || size < 0 || size > 20)  throw new RuntimeException();
 
-            area[x][y] += size;
+            if (x < 0 || y < 0 || size < 1 || size > 20) {
+                // System.out.println(list.toString());
+                // System.out.println();
+                // System.out.format("x:%d y:%d size: %d\n", x, y, size);
+                stop = true;
+                throw new RuntimeException();
+            }
+
+            if (stop)  return;
+
+            List<Integer> element = List.of(x, y, size);
+            potencialElements.add(element);
+
+            if (randomPrimerPrintaj)  System.out.format("%s\n", element);
         }
 
-        // // ----------------------------------------------------------
+        int size = potencialElements.size();
+        if (randomPrimerPrintaj)  System.out.format("-----------------------------------%d", potencialElements.size());
+
+        // //----------------------------------------------------------
         // // TODO: delete this print spam!
-        // for (int i = 0; i < this.area.length; i++) {
-        //     for (int j = 0; j < this.area[i].length; j++) {
-        //         System.out.format("%d", this.area[i][j]);
+        // if (randomPrimerPrintaj) {
+        //     System.out.println("POPULIRAMO_____________________________________________________________________________________________________________________");
+        //     for (int i = 0; i < this.area.length; i++) {
+        //         for (int j = 0; j < this.area[i].length; j++) {
+        //             if (this.area[i][j] == 0)  System.out.format("-- ");
+        //             else  System.out.format("%02d ", this.area[i][j]);
+        //         }
+        //         System.out.println();
         //     }
         //     System.out.println();
         // }
-        // System.out.println();
         // // -----------------------------------------------------------
+
+        // add elements
+        if (!stop) {
+            // if (randomPrimerPrintaj)  System.out.format("ADDING ELEMENTS________________________\n");
+            for (int i = 0; i < size; i++) {
+                this.area[potencialElements.get(i).get(0)][potencialElements.get(i).get(1)] += potencialElements.get(i).get(2);
+                if (randomPrimerPrintaj)  System.out.format("x: %d, y: %d, size: %d, i: %d, sizeOfList: %d\n", potencialElements.get(i).get(0), potencialElements.get(i).get(1), potencialElements.get(i).get(2), i, size);
+            }
+            // if (randomPrimerPrintaj)  System.out.format("ADDEDDDDDDDDDD________________________\n");
+            // if (randomPrimerPrintaj)  System.out.format("%d %d", this.area[18][5], this.area[18][6]);
+        }
     }
 
     public void move() {
@@ -58,6 +98,8 @@ public class Blobservation {
 
         while (n > 0) {
             n--;
+
+            if (randomPrimerPrintaj)  System.out.format("%d %d", this.area[18][5], this.area[18][6]);
 
             // [ [Current Position], [New Position], [Is It Fused], [Size] ]
             List<int[][]> movements = new ArrayList<>();
@@ -79,9 +121,11 @@ public class Blobservation {
 
             // // ----------------------------------------------------------
             // // TODO: delete this print spam!
-            // System.out.println();
-            // for (int i = 0; i < movements.size(); i++) {
-            //     System.out.format("%d,%d -> %d,%d | size: %d\n", movements.get(i)[0][0], movements.get(i)[0][1], movements.get(i)[1][0], movements.get(i)[1][1], movements.get(i)[3][0]);
+            // if (randomPrimerPrintaj) {
+            //     System.out.println();
+            //     for (int i = 0; i < movements.size(); i++) {
+            //         System.out.format("%d,%d -> %d,%d | size: %d\n", movements.get(i)[0][0], movements.get(i)[0][1], movements.get(i)[1][0], movements.get(i)[1][1], movements.get(i)[3][0]);
+            //     }
             // }
             // // -----------------------------------------------------------
 
@@ -116,19 +160,31 @@ public class Blobservation {
             // System.out.format("move %d: \n", n + 1);
             // for (int i = 0; i < this.area.length; i++) {
             //     for (int j = 0; j < this.area[i].length; j++) {
-            //         System.out.format("%d", this.area[i][j]);
+            //         System.out.format("%d ", this.area[i][j]);
             //     }
             //     System.out.println();
             // }
-            // System.out.println();
-            // // -----------------------------------------------------------
+            // // System.out.println();
+            // if (this.area[4][7] == 16 &&  this.area[4][8] == 17 && this.area[5][8] == 15)  randomPrimerPrintaj = true;
+            // if (randomPrimerPrintaj) {
+            //     for (int i = 0; i < this.area.length; i++) {
+            //         for (int j = 0; j < this.area[i].length; j++) {
+            //             if (this.area[i][j] == 0)  System.out.format("-- ");
+            //             else  System.out.format("%02d ", this.area[i][j]);
+            //         }
+            //         System.out.println();
+            //     }
+            //     System.out.format("%d %d", this.area[18][5], this.area[18][6]);
+            //     System.out.println();
+            // }
+            // // // -----------------------------------------------------------
         }
     }
 
     public int[] findMove(int[] pos, int[] size) {
-        // TODO: remove this
-        // System.out.print("new blob: ");
-        // when it finds "skinnier" blob, it will save the distance and look for "skinnier" blobs in that range
+        // // TODO: remove this
+        // if (randomPrimerPrintaj)  System.out.print("new blob: ");
+        // // when it finds "skinnier" blob, it will save the distance and look for "skinnier" blobs in that range
 
         int maxDistance = (this.area.length > this.area[0].length) ? this.area.length - 1: this.area[0].length - 1;
 
@@ -180,8 +236,10 @@ public class Blobservation {
 
         // // ----------------------------------------------------------
         // // TODO: delete this print spam!
-        // for (int a = 0; a < possibleTargets.size(); a++) {
-        //     System.out.format("size: %d | distance: %d | possible move: %d, %d\n", possibleTargets.get(a)[0][0], possibleTargets.get(a)[1][0], possibleTargets.get(a)[2][0], possibleTargets.get(a)[2][1]);
+        // if (randomPrimerPrintaj) {
+        //     for (int a = 0; a < possibleTargets.size(); a++) {
+        //         System.out.format("size: %d | distance: %d | possible move: %d, %d\n", possibleTargets.get(a)[0][0], possibleTargets.get(a)[1][0], possibleTargets.get(a)[2][0], possibleTargets.get(a)[2][1]);
+        //     }
         // }
         // // -----------------------------------------------------------
 
