@@ -7,7 +7,7 @@ Mini projects, rank based (8kyu - 1kyu)
 > because I wanted to make other projects that are not codewars related, I rebranded it!
 
 #### ACOMPLISHEMNTS
-- first 3kyu: ~10h, 5 days, Blobservation **7.3.2024**
+- first 3kyu: ~10h, 5 days, Blobservation | **7.3.2024**
 
 ## CHESSBOARD
 
