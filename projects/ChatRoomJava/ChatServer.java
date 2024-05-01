@@ -9,6 +9,7 @@ public class ChatServer {
 	protected int serverPort = 1234;
 	protected List<Socket> clients = new ArrayList<Socket>(); // list of clients
 	protected List<String> clientNames = new ArrayList<String>(); // list of client names
+	protected String projectPath = "L:/.zrelo obdobje/.School/programiranje/projects/ChatRoomJava";
 
 
 	public static void main(String[] args) throws Exception {
@@ -93,8 +94,14 @@ public class ChatServer {
 		}
 	}
 
-	public void addClientsName(String name) {
-		this.clientNames.add(name);
+	// returns index, where clients name will be
+	public int makeRoomForClientsName() {
+		this.clientNames.add(" ");
+		return this.clientNames.size() - 1;
+	}
+
+	public void addClientsName(String name, int index) {
+		this.clientNames.set(index, name);
 	}
 
 	public void removeClientsName(Socket socket) {
@@ -103,52 +110,42 @@ public class ChatServer {
 	}
 
 	public void writeNewUser(String name, String password) {
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("database.txt", true));
-			writer.write(String.format("%s, %s\n", name, password));
-			writer.close();
-		} catch (IOException e) {
-			System.out.println("PROBLEM WITH WRITER");
-			e.printStackTrace();
-		}
+		
+		String newUserPath = String.format("%s/users/@%s", this.projectPath, name);
+		
+		// create necesery folders / files
+		this.createNewFolder(newUserPath);
+		this.createNewFolder(newUserPath + "/OfflineMessages");
+		this.createNewFile(newUserPath + "/Password.txt");
+
+		// add password, uporabimo lahko kar this.writeToChat metodo, saj isto naredi
+		this.writeToChat(newUserPath + "/Password.txt", password);
 	}
 
 	public boolean findUser(String name, String password) {
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader("database.txt"));
-			String searchingFor = String.format("%s, %s", name, password);
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (line.equals(searchingFor)) {
-					reader.close();
-					return true;
-				}
+
+		String path = String.format("%s/users/@%s", this.projectPath, name);
+		if (this.fileExsists(path)) {
+
+			String knownPassword = null;
+			try {
+
+				BufferedReader reader = new BufferedReader(new FileReader(path + "/Password.txt"));
+				knownPassword = reader.readLine();
+				reader.close();
+			} catch (IOException e) {
+				System.out.println("PROBLEM WITH FINDING USER");
+				e.printStackTrace();
 			}
-			reader.close();
-		} catch (IOException e) {
-			System.out.println("PROBLEM WITH WRITER");
-			e.printStackTrace();
+
+			if (knownPassword.equals(password))  return true;
 		}
 		return false;
 	}
 
 	public boolean CheckNameAvailibilty(String name) {
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader("database.txt"));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String currentName = line.substring(0, line.indexOf(","));
-				if (currentName.equals(name)) {
-					reader.close();
-					return false;
-				}
-			}
-			reader.close();
-		} catch (IOException e) {
-			System.out.println("PROBLEM WITH READER");
-			e.printStackTrace();
-		}
-		return true;
+		
+		return !(this.fileExsists(String.format("%s/users/@%s", this.projectPath, name)));
 	}
 
 	public String getListOfOnlineUsers() {
@@ -167,22 +164,29 @@ public class ChatServer {
 		StringBuilder list = new StringBuilder();
 		list.append("[SYSTEM] LIST OF ALL USERS:\n");
 		list.append("----------\n");
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader("database.txt"));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String currentName = line.substring(0, line.indexOf(","));
-				list.append((this.clientNames.contains(currentName)) ? String.format("- %s [ONLINE]\n", currentName) : String.format("- %s [NOT ONLINE]\n", currentName));
+		File dir = new File(this.projectPath + "/users");
+		File[] listOfUsers = dir.listFiles();
+		if (listOfUsers != null) {
+			for (File user : listOfUsers) {
+				String userFileName = user.getName();
+				// if it is a user file add it to list
+				if (userFileName.charAt(0) == '@') {
+					userFileName = userFileName.substring(1, userFileName.length());
+					list.append((this.clientNames.contains(userFileName)) ? String.format("- %s [ONLINE]\n", userFileName) : String.format("- %s [NOT ONLINE]\n", userFileName));
+				}
 			}
-			reader.close();
-		} catch (IOException e) {
-			System.out.println("PROBLEM WITH READER (getListOfUsers)");
-			e.printStackTrace();
-			return null;
 		}
 		list.append("----------");
 
 		return list.toString();
+	}
+
+	public boolean isOnline(String user) {
+
+		for (String name : this.clientNames) {
+			if (name.equals(user))  return true;
+		}
+		return false;
 	}
 
 	public boolean fileExsists(String fileName) {
@@ -200,15 +204,22 @@ public class ChatServer {
 		return (this.fileExsists(fileName1)) ? fileName1 : fileName2;
 	}
 
+	// -----
+	// SAME FUNCTION, BUT DIFFERENT INPUT
+	// if you only have 2 names
 	public String getHistory(String user1, String user2) {
-		StringBuilder history = new StringBuilder();
-		String fileName1 = String.format("histories/H%s%s.txt", user1, user2);
-		String fileName2 = String.format("histories/H%s%s.txt", user2, user1);
+		String fileName1 = String.format("%s/histories/H%s%s.txt", this.projectPath, user1, user2);
+		String fileName2 = String.format("%s/histories/H%s%s.txt", this.projectPath, user2, user1);
 		if (!this.fileExsists(fileName1) && !this.fileExsists(fileName2)) return String.format("[SYSTEM] YOU DO NOT HAVE HISTROY WITH <%s>", user2);
 
-		String fileName = realFileName(fileName1, fileName2); // the real file name
+		return getHistory(realFileName(fileName1, fileName2)); // the real file name
+	}
 
-		history.append(String.format("[SYSTEM] HISTORY BETWEEN <%s> and <%s>\n", user1, user2));
+	// if you already have the path
+	public String getHistory(String fileName) {
+		StringBuilder history = new StringBuilder();
+
+		history.append(String.format("[SYSTEM] <%s> HISTORY:\n", fileName));
 		history.append("----------\n");
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -225,16 +236,27 @@ public class ChatServer {
 		history.append("----------");		
 		return history.toString();
 	}
+	// -----
 
-	public void createNewChat(String chatName) {
+	public void createNewFolder(String path) {
+
+		new File(path).mkdirs();
+	}
+
+	public void createNewFile(String path) {
 
 		try {
-			File newChat = new File(chatName);
+			File newChat = new File(path);
 			newChat.createNewFile();
 		} catch (IOException e) {
-			System.out.println("PROBLEM WITH CREATING NEW CHAT");
+			System.out.println("PROBLEM WITH CREATING NEW FILE");
 			e.printStackTrace();
 		}
+	}
+
+	public void removeFile(String path) {
+
+		new File(path).delete();
 	}
 
 	public void writeToChat(String chatName, String msg) {
@@ -246,9 +268,141 @@ public class ChatServer {
 			writer.write(msg + "\n");
 			writer.close();
 		} catch (IOException e) {
-			System.out.println("PROBLEM WITH WRITER");
+			System.out.println("PROBLEM WITH WRITER (write to chat)");
 			e.printStackTrace();
 		}
+	}
+
+	public String getChatName(String user1, String user2) {
+		String chatName1 = String.format("%s/histories/H%s%s.txt", this.projectPath, user1, user2);
+		String chatName2 = String.format("%s/histories/H%s%s.txt", this.projectPath, user2, user1);
+		if (!this.fileExsists(chatName1) && !this.fileExsists(chatName2))  this.createNewFile(chatName1); // if chat does not exsist than we make a new one
+
+		String chatName = this.realFileName(chatName1, chatName2);
+
+		// pogledamo, ce je history == 100, ce je deletamo prvi line
+		if (this.historyTooLong(chatName))  this.removeFirstLine(chatName);
+
+		return chatName;
+	}
+
+	public int numberOfLines(String fileName) {
+
+		int lines = 0;
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(fileName));
+			while (reader.readLine() != null)  lines++;
+			reader.close();
+		} catch (IOException e) {
+			System.out.println("PROBLEM WITH READER (historyTooLong)");
+			e.printStackTrace();
+		}
+		return lines;
+	}
+
+	// if history == 100 lines return true
+	public boolean historyTooLong(String chatName) {
+
+		return (this.numberOfLines(chatName) == 50);
+	}
+
+	// it is not so bad that we loop thru the whole file, because it is only max. 50 lines
+	public void removeFirstLine(String chatName) {
+
+		StringBuilder history_new = new StringBuilder();
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(chatName));
+			boolean firstLine = true;
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (firstLine)  firstLine = false;
+				else {
+					history_new.append(line + "\n");
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			System.out.println("PROBLEM WITH READER (removeFirstLine)");
+			e.printStackTrace();
+		}
+
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(chatName, false));
+			writer.write(history_new.toString());
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("PROBLEM WITH WRITER (removeFirstLine)");
+			e.printStackTrace();
+		}	
+	}
+
+	public void addToOfflineMessages(String chat, String user, String msg) {
+
+		String strippedChatName = chat.substring(chat.indexOf('H'));
+		strippedChatName = strippedChatName.substring(0, strippedChatName.indexOf('.'));
+
+		String fileName = String.format("%s/users/@%s/OfflineMessages/%sCNT.txt", this.projectPath, user, strippedChatName);
+
+		// ce file ne obstaja ga naredi
+		if (!this.fileExsists(fileName))  this.createNewFile(fileName);
+
+		int cnt = 1;
+		if (this.numberOfLines(fileName) == 0) { // ce je file prazen, pustimo cnt na 1
+		}
+		else { // sicer preberemo cnt in ga povecamo za 1
+
+			// preberemo cnt
+			try {
+
+				BufferedReader reader = new BufferedReader(new FileReader(fileName));
+				String line = reader.readLine();
+				cnt = Integer.valueOf(line.substring(line.length() - 1)) + 1;
+				reader.close();
+			} catch (IOException e) {
+				System.out.println("PROBLEM WITH ADDING OFFLINE MESSAGE, reader");
+				e.printStackTrace();
+			}
+		}
+
+		// napisemo novo
+		try {
+
+			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false));
+			writer.write(String.format("%s.txt, %d", strippedChatName, cnt));
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("PROBLEM WITH ADDING OFFLINE MESSAGE, writer");
+			e.printStackTrace();
+		}
+	}
+
+	// returns the contents of the offline message
+	public String removeFromOfflineMessages(String chat, String fileToReadFrom, int numberOfMessages) {
+		
+		StringBuilder content = new StringBuilder();
+
+		// preberemo vsebino in vzamemo samo zadnjih <numberOfMessages>
+		String[] messages = this.getHistory(fileToReadFrom).split("\n");
+		for (int i = messages.length - numberOfMessages - 1; i < messages.length - 1; i++) {
+			if (i != messages.length - numberOfMessages - 1)  content.append('\n');
+			content.append(messages[i]);
+		}
+
+		// izbrisemo file
+		this.removeFile(chat);
+
+		return content.toString();
+	}
+
+	// dobimo niz, dveh imen, vrne ime, ki se ne matcha
+	public String findNonMatching(String niz, String podniz) {
+
+		int startIx = niz.indexOf(podniz);
+		int endIx = startIx + podniz.length();
+
+		if (startIx == 0)  return niz.substring(endIx);
+		else 			   return niz.substring(0, startIx);
 	}
 }
 
@@ -288,6 +442,7 @@ class ChatServerConnector extends Thread {
 		// singing in / up
 		boolean logedIn = false;
 		String name;
+		int ixForClientsName = this.server.makeRoomForClientsName();
 		sendMessageToClient("Enter your name or do \"/singup\" to sing up: ", out);
 		while (!logedIn) {
 
@@ -318,15 +473,55 @@ class ChatServerConnector extends Thread {
 				String password = this.getMessageFromClient(in);
 				if (this.server.findUser(name, password)) { // if user in data base, log him in
 					this.name = name;
-					logedIn = true;
+
+					// if user already online give error message saying that
+					if (this.server.isOnline(name)) {
+						this.sendMessageToClient(String.format("USER <%s> IS ALREADY ONLINE ON ANOTHER DEVICE! Try again or sing up with \"/singup\": ", name), out);
+					}
+					else  logedIn = true;
 				} else {
-					this.sendMessageToClient(String.format("USER WITH NAME <%s>, PASSWORD <%s>, does not exsist, try again or sing up with \"/singup\": ", name, password), out);
+					this.sendMessageToClient(String.format("USER WITH NAME <%s>, PASSWORD <%s>, DOES NOT EXSIST! Try again or sing up with \"/singup\": ", name, password), out);
 				}
 			}
 		}
-		server.addClientsName(this.name);
+		server.addClientsName(this.name, ixForClientsName);
 
 		System.out.println("[system] connected with " + this.socket.getInetAddress().getHostName() + ":" + this.socket.getPort() + " | name: " + this.name);
+
+		// ce ima kaksne neprebrane message, ki jih je dobil, ko je bil offline jim mu pokaze in izbrise file iz OfflineMessages
+		File dir = new File(String.format("%s/users/@%s/OfflineMessages", this.server.projectPath, this.name));
+		File[] offlineMessages = dir.listFiles();
+		if (offlineMessages.length > 0) {
+			this.sendMessageToClient(String.format("[SYSTEM] YOU HAVE OFFLINE MESSAGES FROM %d PEOPLE\n----------", offlineMessages.length), out);
+
+			StringBuilder backLog = new StringBuilder();
+			for (File offlineMessage : offlineMessages) {
+	
+				StringBuilder content = new StringBuilder();
+				// preberemo vsebino
+				try {
+					
+					BufferedReader reader = new BufferedReader(new FileReader(offlineMessage));
+					content.append(reader.readLine());
+					reader.close();
+				} catch (IOException e) {
+					System.out.println("PROBLEM WITH READING CONTENT OF OFFLINEMESSAGE FILE");
+					e.printStackTrace();
+				}
+	
+				int numberOfMessages = Integer.valueOf(content.toString().substring(content.toString().indexOf(' ') + 1));
+				String sender = this.server.findNonMatching(content.toString().substring(1, content.toString().indexOf('.')), this.name);
+				String fileToReadFrom = content.toString().substring(0, content.toString().indexOf(','));
+
+				backLog.append(String.format("[SYSTEM] %d MESSAGES FROM %s\n-----\n", numberOfMessages, sender));
+				backLog.append(this.server.removeFromOfflineMessages(offlineMessage.getAbsolutePath(), String.format("%s/histories/%s", this.server.projectPath, fileToReadFrom), numberOfMessages) + '\n');
+				backLog.append("-----\n");
+			}
+			backLog.append("----------\n");
+			this.sendMessageToClient(backLog.toString(), out);
+		}
+
+
 
 		while (true) { // infinite loop in which this thread waits for incoming messages and processes them
 			String msg_received;
@@ -344,6 +539,8 @@ class ChatServerConnector extends Thread {
 
 			// gledamo tip sporocila in kaj bomo z njim naredili
 
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
+			LocalDateTime now = LocalDateTime.now();
 			if (msg_received.charAt(0) == '@') { // privatno sporocilo
 
 				// najdemo ' ';
@@ -364,8 +561,6 @@ class ChatServerConnector extends Thread {
 
 				String msg_send = "";
 				Socket socketC;
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
-				LocalDateTime now = LocalDateTime.now();
 
 				// ce ne najdemo naslovnika moramo posiljatelju nazaj poslati, da nismo nasli, sicer posljemu prejemniku privatno sporocilo
 				if (indexC == -1) {
@@ -381,19 +576,14 @@ class ChatServerConnector extends Thread {
 					System.out.println(msg_send);
 				} else {
 
-					
-					String chatName1 = String.format("histories/H%s%s.txt", this.name, ciljniClient);
-					String chatName2 = String.format("histories/H%s%s.txt", ciljniClient, this.name);
-					if (!this.server.fileExsists(chatName1) && !this.server.fileExsists(chatName2))  this.server.createNewChat(chatName1); // if chat does not exsist than we make a new one
-
-					String chatName = this.server.realFileName(chatName1, chatName2);
-
-					socketC = server.clients.get(indexC);
+					String chatName = this.server.getChatName(this.name, ciljniClient);
 					
 					// priredimo sporocilo za posiljanje
 					msg_send = String.format("[PRIVATNO][%s][%s][%s]: %s", this.name, ciljniClient, dtf.format(now).toString(), msg_received.substring(endIndex + 1, msg_received.length()));
 					this.server.writeToChat(chatName, msg_send);
 					System.out.println(msg_send); // za izpis v serverju
+
+					socketC = server.clients.get(indexC);
 				}
 
 				// posljemo sporocilo cilnjemu odjemalcu
@@ -424,11 +614,27 @@ class ChatServerConnector extends Thread {
 						System.out.println("PROBLEM WITH /history");
 					}
 				}
+				else if (msg_received.contains("/OFF")) {
+					String user = "";
+					try {
+						int endIndex = msg_received.indexOf(" ", msg_received.indexOf("@"));
+						user = msg_received.substring(msg_received.indexOf("@") + 1, endIndex);
+						String chatName = this.server.getChatName(this.name, user);
+						msg_send = String.format("[PRIVATNO][%s][%s][%s]: %s", this.name, user, dtf.format(now).toString(), msg_received.substring(endIndex + 1, msg_received.length()));
+						this.server.writeToChat(chatName, msg_send);
+
+						// if the user is already online we just send it to him
+						if (this.server.clientNames.contains(user))  this.server.sendToClientX(msg_send, this.server.clients.get(this.server.clientNames.indexOf(user)));
+						// else we put it to OfflineMessages
+						else  this.server.addToOfflineMessages(this.server.getChatName(this.name, user), user, msg_send);
+
+					} catch (Exception e) {
+						System.out.println("PROBLEM WITH /OFF");
+						e.printStackTrace();
+					}
+				}
 				else { // unkown command
 					msg_send = String.format("[SYSTEM] COMMAND <%s> IS UNKNOWN", msg_received);
-					this.sendMessageToClient(msg_send, out);
-					System.out.println(msg_send);
-					continue;
 				}
 
 				this.sendMessageToClient(msg_send, out);
@@ -436,8 +642,6 @@ class ChatServerConnector extends Thread {
 			}
 			else { // broadcast
 
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
-				LocalDateTime now = LocalDateTime.now();
 				String msg_send = String.format("[JAVNO][%s][%s]: %s", this.name, dtf.format(now).toString(), msg_received);
 				System.out.println(msg_send);
 
