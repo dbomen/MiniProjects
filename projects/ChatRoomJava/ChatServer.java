@@ -443,48 +443,55 @@ class ChatServerConnector extends Thread {
 		boolean logedIn = false;
 		String name;
 		int ixForClientsName = this.server.makeRoomForClientsName();
-		sendMessageToClient("Enter your name or do \"/singup\" to sing up: ", out);
-		while (!logedIn) {
+		// sendMessageToClient("Enter your name or do \"/singup\" to sing up: ", out);
+		try {
+			while (!logedIn) {
 
-			String input = this.getMessageFromClient(in);
-			if (input.equals("/singup")) { // if client wants to sing up
-
-				boolean nameAvailable = false;
-				name = null;
-				String password = null;
-				while (!nameAvailable) {
-					this.sendMessageToClient("Enter name: ", out);
-					name = this.getMessageFromClient(in);
-					nameAvailable = this.server.CheckNameAvailibilty(name);
-					if (!nameAvailable)  this.sendMessageToClient(String.format("NAME <%s> NOT AVAILABLE TRY AGAIN", name), out);
-				}
-				this.sendMessageToClient("Enter password: ", out);
-				password = this.getMessageFromClient(in);
-
-				this.server.writeNewUser(name, password);
-				this.sendMessageToClient("SUCCESSFULY ADDED NEW USER", out);
-				this.name = name;
-				logedIn = true;
-			} 
-			else { // if client wants to sing in (log in)
-
-				name = input;
-				this.sendMessageToClient("Enter password: ", out);
-				String password = this.getMessageFromClient(in);
-				if (this.server.findUser(name, password)) { // if user in data base, log him in
-					this.name = name;
-
-					// if user already online give error message saying that
-					if (this.server.isOnline(name)) {
-						this.sendMessageToClient(String.format("USER <%s> IS ALREADY ONLINE ON ANOTHER DEVICE! Try again or sing up with \"/singup\": ", name), out);
+				String input = this.getMessageFromClient(in);
+				if (input.equals("/singup")) { // if client wants to sing up
+	
+					boolean nameAvailable = false;
+					name = null;
+					String password = null;
+					while (!nameAvailable) {
+						this.sendMessageToClient("Enter name: ", out);
+						name = this.getMessageFromClient(in);
+						nameAvailable = this.server.CheckNameAvailibilty(name);
+						if (!nameAvailable)  this.sendMessageToClient(String.format("NAME <%s> NOT AVAILABLE TRY AGAIN", name), out);
 					}
-					else  logedIn = true;
-				} else {
-					this.sendMessageToClient(String.format("USER WITH NAME <%s>, PASSWORD <%s>, DOES NOT EXSIST! Try again or sing up with \"/singup\": ", name, password), out);
+					this.sendMessageToClient("Enter password: ", out);
+					password = this.getMessageFromClient(in);
+	
+					this.server.writeNewUser(name, password);
+					this.sendMessageToClient("SUCCESSFULY ADDED NEW USER", out);
+					this.name = name;
+					logedIn = true;
+				} 
+				else { // if client wants to sing in (log in)
+	
+					name = input.substring(0, input.indexOf(','));
+					String password = input.substring(input.indexOf(' ') + 1); // added
+					// this.sendMessageToClient("Enter password: ", out);
+					// String password = this.getMessageFromClient(in);
+					if (this.server.findUser(name, password)) { // if user in data base, log him in
+						this.name = name;
+	
+						// if user already online give error message saying that
+						if (this.server.isOnline(name)) {
+							this.sendMessageToClient(String.format("USER <%s> IS ALREADY ONLINE ON ANOTHER DEVICE! Try again or sing up with \"/singup\": ", name), out);
+						}
+						else  logedIn = true;
+					} else {
+						this.sendMessageToClient(String.format("USER WITH NAME <%s>, PASSWORD <%s>, DOES NOT EXSIST! Try again or sing up with \"/singup\": ", name, password), out);
+					}
 				}
 			}
+			server.addClientsName(this.name, ixForClientsName);
+		} catch (Exception e) {
+			System.out.println("PROBLEM WITH LOGIN IN/ SING UP, removing user");
+			this.server.removeClient(this.socket);
 		}
-		server.addClientsName(this.name, ixForClientsName);
+
 
 		System.out.println("[system] connected with " + this.socket.getInetAddress().getHostName() + ":" + this.socket.getPort() + " | name: " + this.name);
 
@@ -627,6 +634,9 @@ class ChatServerConnector extends Thread {
 						if (this.server.clientNames.contains(user))  this.server.sendToClientX(msg_send, this.server.clients.get(this.server.clientNames.indexOf(user)));
 						// else we put it to OfflineMessages
 						else  this.server.addToOfflineMessages(this.server.getChatName(this.name, user), user, msg_send);
+
+						System.out.println(msg_send);
+						continue;
 
 					} catch (Exception e) {
 						System.out.println("PROBLEM WITH /OFF");

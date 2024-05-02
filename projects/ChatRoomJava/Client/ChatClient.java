@@ -1,3 +1,4 @@
+package Client;
 import java.io.*;
 import java.net.*;
 
@@ -19,7 +20,9 @@ public class ChatClient extends Thread
 
 		// connect to the chat server
 		try {
-			System.out.println("[system] connecting to chat server ...");
+			String connectingMessage = "[system] connecting to chat server ...";
+			System.out.println(connectingMessage);
+
 			socket = new Socket("localhost", serverPort); // create socket connection
 			in = new DataInputStream(socket.getInputStream()); // create input stream for listening for incoming messages
 			out = new DataOutputStream(socket.getOutputStream()); // create output stream for sending messages
@@ -31,6 +34,9 @@ public class ChatClient extends Thread
 			e.printStackTrace(System.err);
 			System.exit(1);
 		}
+
+		// login in / sing up
+		
 
 		// read from STDIN and send messages to the chat server
 		while ((userInput = std_in.readLine()) != null) { // read a line from the console

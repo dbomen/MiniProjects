@@ -29,7 +29,8 @@ TO DO:
     - [x] nared, da ko se user joina mu naredimo folder ter zameni database
     - [x] ko user joina mu pove, ce je dobil kaksen message, ko je bil offline, ce je trenutno online, mu kar posle message in ne gre vse to delat vmes
     - [ ] nered GUI, da ni treba command pisat (glej tist video)
-        - [ ] Log-in / Sing-up GUI
-        - [ ] Chat GUI
+        - [ ] nared LoginGUI (nared se za singup action listener, ko nov frame odprl)
+        - [ ] nared LoginGui-Client connector (torej client bo caku da dobimo message od login GUI)
+        - [ ] next: ChatGUI
     - [ ] "..."
 - [x] option to log in / sign up (database (not really meu bom en txt file k bo to mel notr))
