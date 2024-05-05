@@ -148,6 +148,15 @@ public class ChatServer {
 		return !(this.fileExsists(String.format("%s/users/@%s", this.projectPath, name)));
 	}
 
+	public boolean checkRightAscii(String text) {
+
+		for (int i = 0; i < text.length(); i++) {
+			if (text.charAt(i) < 33 || text.charAt(i) > 126)  return false;
+			System.out.println(text.charAt(i) + " TOO LONG" + (int) text.charAt(i));
+		}
+		return true;
+	}
+
 	public String getListOfOnlineUsers() {
 		StringBuilder list = new StringBuilder();
 		list.append("[SYSTEM] LIST OF ONLINE USERS:\n");
@@ -448,48 +457,61 @@ class ChatServerConnector extends Thread {
 			while (!logedIn) {
 
 				String input = this.getMessageFromClient(in);
+				if (input == null)  throw new Exception(); // if client closed aplication
 				if (input.equals("/singup")) { // if client wants to sing up
 	
-					boolean nameAvailable = false;
+					boolean nameAvailable = false; // checker that name is available
+					boolean inputTooLong = true; // checker that input is 20 chars or less
+					boolean inputCorrectFormat = false; // checker that input chars are >= 33 && <= 126(ascii) (od <!> naprej)
 					name = null;
 					String password = null;
-					while (!nameAvailable) {
-						this.sendMessageToClient("Enter name: ", out);
-						name = this.getMessageFromClient(in);
+					while (!nameAvailable || inputTooLong || !inputCorrectFormat) {
+						if (input == null) throw new Exception(); // if client closed aplication
+						input = this.getMessageFromClient(in);
+						name = input.substring(0, input.indexOf(','));
+						password = input.substring(input.indexOf(' ') + 1);
+
+						inputTooLong = (name.length() > 20 || password.length() > 20) ? true : false;
+						inputCorrectFormat = this.server.checkRightAscii(name) && this.server.checkRightAscii(password);
 						nameAvailable = this.server.CheckNameAvailibilty(name);
-						if (!nameAvailable)  this.sendMessageToClient(String.format("NAME <%s> NOT AVAILABLE TRY AGAIN", name), out);
+
+						// name or password too long (max. 20 chars)
+						if (inputTooLong)  this.sendMessageToClient("NAME OR PASSWORD TOO LONG, max. size is 20!", out);
+
+						// invisible characters (ascii < 33 || ascii > 126)
+						else if (!inputCorrectFormat)  this.sendMessageToClient("FOUND INVISIBLE ASCII CHARACTERS, Try again!", out);
+
+						// name not available
+						else if (!nameAvailable)  this.sendMessageToClient(String.format("NAME <%s> NOT AVAILABLE, Try again!", name), out);
 					}
-					this.sendMessageToClient("Enter password: ", out);
-					password = this.getMessageFromClient(in);
 	
 					this.server.writeNewUser(name, password);
-					this.sendMessageToClient("SUCCESSFULY ADDED NEW USER", out);
 					this.name = name;
 					logedIn = true;
 				} 
 				else { // if client wants to sing in (log in)
 	
 					name = input.substring(0, input.indexOf(','));
-					String password = input.substring(input.indexOf(' ') + 1); // added
-					// this.sendMessageToClient("Enter password: ", out);
-					// String password = this.getMessageFromClient(in);
+					String password = input.substring(input.indexOf(' ') + 1);
 					if (this.server.findUser(name, password)) { // if user in data base, log him in
 						this.name = name;
 	
 						// if user already online give error message saying that
 						if (this.server.isOnline(name)) {
-							this.sendMessageToClient(String.format("USER <%s> IS ALREADY ONLINE ON ANOTHER DEVICE! Try again or sing up with \"/singup\": ", name), out);
+							this.sendMessageToClient(String.format("USER <%s> IS ALREADY ONLINE ON ANOTHER DEVICE! Try again!", name), out);
 						}
 						else  logedIn = true;
 					} else {
-						this.sendMessageToClient(String.format("USER WITH NAME <%s>, PASSWORD <%s>, DOES NOT EXSIST! Try again or sing up with \"/singup\": ", name, password), out);
+						this.sendMessageToClient(String.format("USER WITH NAME <%s>, PASSWORD <%s>, DOES NOT EXSIST! Try again!", name, password), out);
 					}
 				}
 			}
+			this.sendMessageToClient(String.format("SUCCESS, %s", this.name), out); // posljemo clintu success, da ve da je prijavljen
 			server.addClientsName(this.name, ixForClientsName);
 		} catch (Exception e) {
-			System.out.println("PROBLEM WITH LOGIN IN/ SING UP, removing user");
+			System.out.println("PROBLEM WITH LOGIN IN / SING UP, removing user");
 			this.server.removeClient(this.socket);
+			return;
 		}
 
 
