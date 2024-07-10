@@ -14,4 +14,5 @@ my LeetCode solutions
 > TODO: add all of my LeetCode solutions
 
 ## OTHER
-- racunanje game : my first file handling mini-project in C
+- racunanje game: my first file handling mini-project in C
+- QnA game: My first experience using APIs in Java. [README](other/QnAGame/README.md)
