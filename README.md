@@ -1,7 +1,6 @@
 # MINIPROJECTS
 
-> Revamped this repo. Was originally called "programiranje", where I had all my projects.
-> But now every "BIG" project will have it's own repo, smaller ones will stay here.
+> This repo is for my smaller projects. The main goal of these projects are to learn a new technology or something completely new, and use that in a small project before using it in a "big" project. Besides that the repository contains my leet code and codewars solutions.
 
 ## CODEWARS
 my CodeWars solutions
@@ -16,3 +15,4 @@ my LeetCode solutions
 ## OTHER
 - racunanje game: my first file handling mini-project in C
 - QnA game: My first experience using APIs in Java. [README](other/QnAGame/README.md)
+- FirstAndroidApp: first android app in Java, also first time using SQlite in Java (have little experience with sqlite in the [ODOT project (JS web app)](https://github.com/dbomen/ODOT)) [README](other/FirstAndroidApp/README.md)
