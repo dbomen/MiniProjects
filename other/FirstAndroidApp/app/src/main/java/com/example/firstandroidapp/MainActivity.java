@@ -1,8 +1,7 @@
 package com.example.firstandroidapp;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,12 +14,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    int gNumber = 0;
-
     // references
     Button mainButton;
     TextView mainText;
     TextView mainName;
+    User user;
+
+    DataBaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +36,43 @@ public class MainActivity extends AppCompatActivity {
         mainButton = findViewById(R.id.button);
         mainText = findViewById(R.id.mainText);
         mainName = findViewById(R.id.mainName);
+        db = new DataBaseHelper(MainActivity.this);
+
+        Intent i = getIntent();
+        user = (User) i.getSerializableExtra("user");
+
+        mainText.setText(String.format("%d", user.getVal()));
+        mainName.setText(String.format("HELLO %s", user.getName()));
     }
 
-    public void changeMainText(View v) {
+    public void incrementVal(View v) {
 
-        mainText.setText(String.format("%d", this.gNumber));
-        this.gNumber++;
+        try {
+
+            // v db povecamo COLUMN_VAL za 1
+            boolean status = db.incrementUserValueById(user.getId());
+            if (!status)  throw new Exception();
+
+            // iz db-ja new user object
+            // (lahko bi samo tukaj naredili val++, vendar nam ta extra step zagotovi, da se je val res incrementiral)
+            User userFromDb = db.getUserById(user.getId());
+            if (userFromDb == null)  throw new Exception();
+            user = userFromDb;
+
+            // prikazemo new value
+            mainText.setText(String.format("%d", user.getVal()));
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            HelperFunctions.showToast(MainActivity.this, "ERROR, DID NOT INCREMENT");
+        }
+    }
+
+    public void LogOutAction(View v) {
+
+        Intent i = new Intent(this, LoginPage.class);
+        startActivity(i);
+        finish();
     }
 }
