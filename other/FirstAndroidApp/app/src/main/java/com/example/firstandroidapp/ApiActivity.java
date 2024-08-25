@@ -68,6 +68,7 @@ public class ApiActivity extends AppCompatActivity {
         // pre send
         String pokemonName = apiActivity_TextInput.getText().toString().toLowerCase();
         String url = String.format("https://pokeapi.co/api/v2/pokemon/%s", pokemonName);
+        apiActivity_TextInput.setText("");
 
         // we setup the request
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
