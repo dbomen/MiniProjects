@@ -58,6 +58,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return false;
         }
         return true;
+
     }
 
     public User getUserByName(String username) {
