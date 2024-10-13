@@ -3,6 +3,7 @@
         "l:\\Programs\\JAVA LIBS\\gson\\gson-2.11.0.jar"
     ],
     "files.associations": {
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "stdexcept": "cpp"
     }
 }
