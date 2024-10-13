@@ -12,6 +12,9 @@ my CodeWars solutions
 my LeetCode solutions
 > TODO: add all of my LeetCode solutions
 
+## ADVENT OF CODE
+my advent od code solutions
+
 ## OTHER
 - racunanje game: my first file handling mini-project in C
 - QnA game: My first experience using APIs in Java. [README](other/QnAGame/README.md)

@@ -1,5 +1,8 @@
 {
     "java.project.referencedLibraries": [
         "l:\\Programs\\JAVA LIBS\\gson\\gson-2.11.0.jar"
-    ]
+    ],
+    "files.associations": {
+        "iosfwd": "cpp"
+    }
 }
