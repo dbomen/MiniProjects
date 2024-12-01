@@ -1,0 +1,1 @@
+/mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/other/rustTutorial/cargo_hello_world/target/debug/cargo_hello_world: /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/other/rustTutorial/cargo_hello_world/src/main.rs
