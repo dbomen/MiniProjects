@@ -1,0 +1,1 @@
+/mnt/c/.School/MiniProjects/adventOfCode/2024/day1/part1/rust/HistorianHysteria/target/debug/HistorianHysteria: /mnt/c/.School/MiniProjects/adventOfCode/2024/day1/part1/rust/HistorianHysteria/src/main.rs
