@@ -1,0 +1,1 @@
+/mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day1/part2/rust/HistorianHysteria/target/debug/HistorianHysteria: /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day1/part2/rust/HistorianHysteria/src/main.rs
