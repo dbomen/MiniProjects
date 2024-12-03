@@ -1,0 +1,1 @@
+/mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day2/part1/rust/Red-Nosed_Reports/target/debug/Red-Nosed_Reports: /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day2/part1/rust/Red-Nosed_Reports/src/main.rs
