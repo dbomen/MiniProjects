@@ -1,0 +1,1 @@
+/mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day3/part2/rust/Mull_It_Over/target/debug/Mull_It_Over: /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day3/part2/rust/Mull_It_Over/src/main.rs
