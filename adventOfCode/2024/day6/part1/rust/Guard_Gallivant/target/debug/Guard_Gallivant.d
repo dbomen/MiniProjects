@@ -1,0 +1,1 @@
+/mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day6/part1/rust/Guard_Gallivant/target/debug/Guard_Gallivant: /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day6/part1/rust/Guard_Gallivant/src/main.rs
