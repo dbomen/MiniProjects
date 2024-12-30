@@ -1,0 +1,1 @@
+/mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day7/part2/rust/bridge_repair/target/debug/bridge_repair: /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day7/part2/rust/bridge_repair/src/main.rs /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day7/part2/rust/bridge_repair/src/solution.rs
