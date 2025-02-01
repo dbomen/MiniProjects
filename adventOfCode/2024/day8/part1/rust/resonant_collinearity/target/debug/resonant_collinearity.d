@@ -1,0 +1,1 @@
+/mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day8/part1/rust/resonant_collinearity/target/debug/resonant_collinearity: /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day8/part1/rust/resonant_collinearity/src/main.rs /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day8/part1/rust/resonant_collinearity/src/solution.rs
