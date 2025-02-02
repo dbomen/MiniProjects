@@ -1,0 +1,1 @@
+/mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day9/part1/rust/disk_fragmenter/target/debug/disk_fragmenter: /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day9/part1/rust/disk_fragmenter/src/main.rs /mnt/l/.zrelo\ obdobje/Programiranje/MiniProjects/adventOfCode/2024/day9/part1/rust/disk_fragmenter/src/solution.rs
