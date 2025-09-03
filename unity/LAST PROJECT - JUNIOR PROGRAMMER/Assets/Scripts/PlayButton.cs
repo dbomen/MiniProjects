@@ -11,8 +11,8 @@ public class PlayButton : MonoBehaviour
         string playerName = inputField.text;
         if (playerName.Length > 0)
         {
-            GameManager.Instance.playerName = playerName;
             SceneManager.LoadScene(0);
+            GameManager.Instance.StartGame(playerName);
         }
     }
 }
