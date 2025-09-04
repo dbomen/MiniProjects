@@ -38,9 +38,7 @@ public class GameManager : MonoBehaviour
     {
         float timeToWaitForSceneToLoad = 2.0f;
         yield return new WaitForSeconds(timeToWaitForSceneToLoad);
-        Spawner ballSpawner = GameObject.FindGameObjectWithTag("Ball Spawner").GetComponent<Spawner>();
-        Spawner cubeSpawner = GameObject.FindGameObjectWithTag("Cube Spawner").GetComponent<Spawner>();
-        ballSpawner.Spawn();
-        cubeSpawner.Spawn();
+        Spawner spawner = GameObject.Find("Spawner").GetComponent<Spawner>();
+        spawner.Spawn();
     }
 }

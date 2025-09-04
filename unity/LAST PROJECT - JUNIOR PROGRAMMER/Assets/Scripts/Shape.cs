@@ -8,11 +8,14 @@ public abstract class Shape : MonoBehaviour
     [SerializeField]
     protected float impact;
 
-    private Spawner spawner;
+    protected Spawner spawner;
 
-    private void OnCreate(Spawner spawner)
+    private Rigidbody rb;
+
+    public void OnCreate(Spawner spawner)
     {
         this.spawner = spawner;
+        this.rb = GetComponent<Rigidbody>();
     }
 
     void FixedUpdate()
@@ -22,7 +25,11 @@ public abstract class Shape : MonoBehaviour
 
     protected virtual void MoveToEnemy()
     {
-        
+        if (this.spawner != null)
+        {
+            Vector3 directionVector = GetDirectionVector();
+            rb.AddForce(directionVector * this.speed, ForceMode.Force);
+        }
     }
 
     private void ImpactOnCollision(Rigidbody enemyRigidbody)
@@ -30,6 +37,7 @@ public abstract class Shape : MonoBehaviour
         enemyRigidbody.AddForce(new Vector3(0, impact, 0), ForceMode.Impulse);
     }
 
+    protected abstract Vector3 GetDirectionVector();
     protected abstract void Upgrade();
 
     private void OnCollisionEnter(Collision collision)
