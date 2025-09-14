@@ -1,0 +1,20 @@
+{
+  "name": "15_modules",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "main": "node main.js",
+    "strict": "node strict.js",
+    "build": "vite build",
+    "start_build": "node dist/15_modules.js"
+  },
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "cowsay": "^1.6.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.5"
+  }
+}
