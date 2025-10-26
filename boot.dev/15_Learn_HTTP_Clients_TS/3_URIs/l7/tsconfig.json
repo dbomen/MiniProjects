@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "esnext",
+            "dom"
+        ], // specifies the library files to include in the compilation. It's what APIs are available for us to use in our code.
+        "target": "esnext", // specifies the ECMAScript target version for the JavaScript output.
+        "module": "esnext",
+        "strict": true,
+        "skipLibCheck": true,
+        "verbatimModuleSyntax": true,
+        "moduleDetection": "force",
+        "noUncheckedIndexedAccess": true
+    }
+}
