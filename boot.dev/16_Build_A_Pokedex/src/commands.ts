@@ -36,6 +36,11 @@ export function getCommands(): Record<string, CLICommand> {
             name: "inspect",
             description: "inspect caught pokemono",
             callback: commandInspect,
+        },
+        pokedex: {
+            name: "pokedex",
+            description: "print pokedex",
+            callback: commandPokedex,
         }
         // ...
     };
@@ -123,4 +128,10 @@ export async function commandInspect(state: State, arg0: string, arg1: string) {
         console.log(pokemon);
     else
         console.log(`You have not cought ${arg1} yet...`);
+}
+
+export async function commandPokedex(state: State) {
+    Object.entries(state.pokedex).forEach((pokemon) => {
+        console.log(pokemon[1].name);
+    });
 }
