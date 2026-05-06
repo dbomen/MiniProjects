@@ -1,0 +1,3 @@
+- ```odin run <dir>``` compile and run package (dir)
+    - ```odin run <file> -file``` compile and run file as package
+- ```odin build <dir>``` compile
