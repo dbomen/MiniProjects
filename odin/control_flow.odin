@@ -3,6 +3,8 @@ package main// colection of odin files
 import "core:fmt"
 import "core:os"
 
+// or_else, or_return, or_continue, or_break: can be used as syntactic sugar
+
 main :: proc() {
     for {}
 }
@@ -36,6 +38,7 @@ if_ :: proc() {
     fmt.print("a" if num == 3 else "b")
 
     // comp-time if statement (only constanst!), type checked (like #if preprocessor in C)
+    // more: https://odin-lang.org/docs/overview/#when-statements
     when ODIN_ARCH == .i386 {
         fmt.println("32 bit")
     } else when ODIN_ARCH == .amd64 {
@@ -44,6 +47,9 @@ if_ :: proc() {
         fmt.println("Unsupported architecture")
     }
     fmt.print("a" when num == 3 else "b")
+    // command line defines (with -define:FOO=true)
+    FOO :: #config(FOO, false) // default value is false
+    // build tags: https://odin-lang.org/docs/overview/#advanced-build-tags
 }
 
 switch_ :: proc() {

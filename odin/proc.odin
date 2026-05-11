@@ -7,6 +7,14 @@ import "core:fmt"
 //  - it includes a pointer to the current context as an implicit additional argument
 // You can change calling conventions. Its C's calling convention in foreign blocks: https://odin-lang.org/docs/overview/#calling-conventions
 
+// Implicit context:
+// - context.allocator: normal allocator: make and delete (for collections) new, new_clone and free (for non-collections)
+//  - for debug mode u can use Tracking_Alloctor: https://odin-lang.org/docs/overview/#tracking-allocator
+// - context.temp_allocator: arena allocator: make, new, new_clone and free_all
+// - context.logger: core:log: log.info, log.warn
+// - context.user_ptr: spare rawptr
+// - context.user_index: spare int
+
 // parameters and named results can have default values
 f :: proc(a: int = 0) -> int {     // parameters are immutable by default
     a := a // explicit mutation (also shadowing)

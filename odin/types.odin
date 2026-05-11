@@ -25,6 +25,7 @@ main :: proc() {
     i_: int = pt^ // dereference
     pt2: rawptr // address. Has to be cast to a type to be used
     pt3: [^]int // pointer to many ints (C like ptr). Shouldnt rly be used since we have slices
+    pt4 := raw_data(make([dynamic]int)) // gives the underlying pointer (as multipointer) of bultin data type
 
     // COLLECTIONS (are bounds checked, unless u use #no_bounds_check)
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::
