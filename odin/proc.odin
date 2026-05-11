@@ -5,6 +5,7 @@ import "core:fmt"
 // same calling convention as C, but:
 //  - if more efficient it promotes value to a pointer (can be done since all params are immutable)
 //  - it includes a pointer to the current context as an implicit additional argument
+// You can change calling conventions. Its C's calling convention in foreign blocks: https://odin-lang.org/docs/overview/#calling-conventions
 
 // parameters and named results can have default values
 f :: proc(a: int = 0) -> int {     // parameters are immutable by default
@@ -26,6 +27,7 @@ to_string :: proc {
 
 main :: proc() {
     f(a = 1)
+    callback :: proc(x: int) -> bool
 
     fmt.println(sum()) // 0
     fmt.println(sum(1, 2, 3, 4, 5)) // 15

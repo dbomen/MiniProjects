@@ -32,6 +32,18 @@ if_ :: proc() {
     else if num == 4 do fmt.println("x == 4")
     else             do fmt.println("wow")
     //odinfmt: enable
+    fmt.print(num == 3 ? "a" : "b")
+    fmt.print("a" if num == 3 else "b")
+
+    // comp-time if statement (only constanst!), type checked (like #if preprocessor in C)
+    when ODIN_ARCH == .i386 {
+        fmt.println("32 bit")
+    } else when ODIN_ARCH == .amd64 {
+        fmt.println("64 bit")
+    } else {
+        fmt.println("Unsupported architecture")
+    }
+    fmt.print("a" when num == 3 else "b")
 }
 
 switch_ :: proc() {
@@ -85,15 +97,4 @@ defer_ :: proc() {
     }
     defer os.close(f) // defer execution to end of scope (put on stack)
     // rest of code
-}
-
-when_ :: proc() {
-    // comp-time if statement (only constanst!), type checked (like #if preprocessor in C)
-    when ODIN_ARCH == .i386 {
-        fmt.println("32 bit")
-    } else when ODIN_ARCH == .amd64 {
-        fmt.println("64 bit")
-    } else {
-        fmt.println("Unsupported architecture")
-    }
 }
