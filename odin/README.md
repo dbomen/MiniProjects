@@ -1,3 +1,7 @@
 - ```odin run <dir>``` compile and run package (dir)
     - ```odin run <file> -file``` compile and run file as package
 - ```odin build <dir>``` compile
+- external dependencies
+    - vendor: shipped and managed by odin. https://github.com/odin-lang/Odin/tree/master/vendor
+    - shared: packages managed by yourself (in Odin).
+    - native: C/C++ packages managed by yourself (foreign keyword). More on foreign: https://odin-lang.org/docs/overview/#foreign-system
