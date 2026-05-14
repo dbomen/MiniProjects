@@ -99,6 +99,7 @@ main :: proc() {
     }
 
     // Unions, more: https://odin-lang.org/docs/overview/#unions
+    // Tagged union: tag + storage for the largest variant (not a C-style raw union)
     //odinfmt: disable
     Value :: union { bool, i32, f32, string }
     //odinfmt: enable
